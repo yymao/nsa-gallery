@@ -1,23 +1,29 @@
 from astropy.io import fits
 from urllib import urlopen
+from tempfile import TemporaryFile
 import os
 import sqlite3
 from scipy.constants import c
 
 ch = c*1.0e-5 #in Mpc/h
  
-f = urlopen("http://sdss.physics.nyu.edu/mblanton/v0/catalogs/nsa_v0_1_2.fits")
-ff = fits.open(f)
-nsa = ff[1].data
-ff.close()
+def fits_open_url(url):
+    f = urlopen(url)
+    with TemporaryFile() as ftmp:
+        ftmp.write(f.read())
+        ftmp.seek(0,0)
+        ff = fits.open(ftmp)
+        X = ff[1].data
+        ff.close()
+    return X
 
-f = urlopen("http://sdss.physics.nyu.edu/mblanton/v0/catalogs/ned_atlas.fits")
-ff = fits.open(f)
-ned = ff[1].data
-ff.close()
+nsa = fits_open_url("http://sdss.physics.nyu.edu/mblanton/v0/nsa_v0_1_2.fits")
+ned = fits_open_url("http://sdss.physics.nyu.edu/mblanton/v0/catalogs/ned_atlas.fits")
 
 db_path = 'nsa.sqlite3'
-os.unlink(db_path)
+
+if os.path.isfile(db_path):
+    os.unlink(db_path)
 db = sqlite3.connect(db_path)
 db.execute('create table nsa (nsa int unique, ra real, dec real, dist real, iau text, ned text)')
 db.commit()
