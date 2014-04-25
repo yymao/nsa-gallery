@@ -66,6 +66,11 @@ $('#btn_prev').click(function() {
     $('#nsa_id').val("");
 });
 
+$('#nsa_id').change(function(){
+    var tmp_i = nsa_map[$(this).val()];
+    if (tmp_i !== undefined) change_img(tmp_i);
+});
+
 $('#nsa_id').keyup(function(event){
     var tmp_i = nsa_map[$(this).val()];
     if (tmp_i !== undefined) change_img(tmp_i);
