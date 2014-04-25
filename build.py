@@ -14,14 +14,16 @@ def query_nsa(nsa, db):
     else:
         d = {}
         for k, fmt, v in zip(_db_cols, _db_fmts, row):
-            if v != '':
-                d[k] = fmt%v
+            d[k] = fmt%v
+        if d['ned'] == '':
+            del d['ned']
         return d
 
 def get_images(d, scales, path, override=False):
     for name, scale in scales:
         fname = path%(name, d['nsa'])
         if override or (not os.path.exists(fname)):
+            print "... download image for %s (%s)"%(d['nsa'], name)
             urlretrieve(_img_url%(d['ra'], d['dec'], scale), fname)
 
 if __name__ == "__main__":

@@ -96,7 +96,7 @@ $(document).keydown(function(event){
             case 70:
             case 191:
                 event.preventDefault();
-                $('#nsa_id').focus();
+                $('#nsa_id').select();
                 break;
         }
     }
