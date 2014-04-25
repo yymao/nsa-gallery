@@ -1,5 +1,5 @@
 import os
-from urllib import urlopen
+from urllib import urlretrieve
 
 _db_cols = ['nsa', 'ra', 'dec', 'dist', 'iau', 'ned']
 _db_fmts = ['%d', '%.7f', '%.7f', '%g', '%s', '%s']
@@ -18,12 +18,11 @@ def query_nsa(nsa, db):
                 d[k] = fmt%v
         return d
 
-def get_images(d, scales, path, skip_exists=False):
+def get_images(d, scales, path, override=False):
     for name, scale in scales:
         fname = path%(name, d['nsa'])
-        if not (skip_exists and os.path.isfile(fname)):
-            with open(fname, 'wb') as fo:
-                fo.write(urlopen(_img_url%(d['ra'], d['dec'], scale)).read())
+        if override or (not os.path.exists(fname)):
+            urlretrieve(_img_url%(d['ra'], d['dec'], scale), fname)
 
 if __name__ == "__main__":
     import sys
@@ -59,7 +58,7 @@ if __name__ == "__main__":
                     print 'Warning: Cannot find NSA ID', row[0]
                     continue
                 d['userdata'] = list(row[1:])
-                get_images(d, img_scales, img_path, True)
+                get_images(d, img_scales, img_path)
                 f.write(',\n' if i > 1 else '')
                 f.write(json.dumps(d))
                 nsa_map[d['nsa']] = i-1
