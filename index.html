@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>NSA Gallery | made for SAGA</title>
+  <link rel="stylesheet" href="app/pure-min.css">
+  <style>
+    .l-box {padding: 1em;}
+    .t-box {padding-top: 0.5em;}
+    #info {padding-left: 1em;}
+    #info a {margin-left: 0.5em;}
+    #footer {font-size: 85%;}
+  </style>
+</head>
+
+<body>
+<div class="pure-g">
+  <div class="pure-u-1">
+    <div class="l-box">
+      <form class="pure-form">
+        <button class="pure-button pure-button-primary" id="btn_prev">Prev</button>
+        <button class="pure-button pure-button-primary" id="btn_next">Next</button>
+        <input class="pure-input-rounded" type="text" id="nsa_id" placeholder="Search NSA #">
+        <span id="info"></span>
+      </form>
+      <div class="t-box">
+        <table class="pure-table">
+          <thead id="thead"></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="t-box">
+        <img id="img_zoom"/>
+        <img id="img_wide"/>
+      </div>
+      <div class="t-box" id="footer">
+        Images from SDSS-III DR10. Webpage made by Yao-Yuan Mao.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="app/jquery-1.11.0.min.js"></script>
+<script src="app/data.js"></script>
+<script src="app/gallery.js"></script>
+</body>
+
+</html>
