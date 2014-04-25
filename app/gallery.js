@@ -5,75 +5,74 @@ var dom_info = document.getElementById("info");
 var dom_tbody = document.getElementById("tbody");
 
 var my_n = d.length;
-var my_i = nsa_map[window.location.hash.substring(1)];
+var my_i = -1;
 
-var url = {"nsa": "http://www.nsatlas.org/getAtlas.html?submit_form=Submit&search=nsaid&nsaID=",
+var url = {
+    "nsa": "http://www.nsatlas.org/getAtlas.html?submit_form=Submit&search=nsaid&nsaID=",
     "sdss": "http://skyserver.sdss3.org/dr10/en/tools/chart/navi.aspx?scale=0.7",
-    "ned": "http://ned.ipac.caltech.edu/cgi-bin/objsearch?objname="};
+    "ned": "http://ned.ipac.caltech.edu/cgi-bin/objsearch?objname="
+};
 
-var a_proto = document.createElement("a");
-a_proto.target="_blank";
-a_proto.setAttribute("class", "pure-button");
+var a_template = document.createElement("a");
+a_template.target="_blank";
+a_template.setAttribute("class", "pure-button");
 
 //set global functions
 var add_hyperlink = function(href, text){
-    var a = a_proto.cloneNode();
+    var a = a_template.cloneNode();
     a.href = href;
     a.innerHTML = text;
     dom_info.appendChild(a);
 };
 
-var change_img = function(i){
-    var nsa = d[i].nsa;
+var load_object = function(i){
+    var di = d[i];
+    var nsa = di.nsa;
+    //load images
     dom_img_zoom.setAttribute("src", "images/zoom_" + nsa + ".jpg");
     dom_img_wide.setAttribute("src", "images/wide_" + nsa + ".jpg");
-    load_info(i);
-    load_table(i);
-    window.location.hash = "#" + d[i].nsa;
+    //write info
+    dom_info.innerHTML = "";
+    add_hyperlink(url.nsa + nsa, "NSA " + nsa);
+    add_hyperlink(url.sdss + "&ra="+di.ra+"&dec="+di.dec, "SDSS "  + di.iau);
+    if("ned" in di) add_hyperlink(url.ned+encodeURIComponent(di.ned), di.ned);
+    //write table
+    dom_tbody.innerHTML = "<tr><td>" 
+        + ([di.ra, di.dec, di.dist].concat(di.userdata)).join("</td><td>") 
+        + "</td></tr>";
+    window.location.hash = "#" + nsa;
     my_i = i;
 };
 
-var load_info = function(i){
-    var di = d[i];
-    dom_info.innerHTML = "";
-    add_hyperlink(url.nsa + di.nsa, "NSA " + di.nsa);
-    add_hyperlink(url.sdss + "&ra="+di.ra+"&dec="+di.dec, "SDSS "  + di.iau);
-    if("ned" in di) add_hyperlink(url.ned+encodeURIComponent(di.ned), di.ned);
+var load_object_by_nsa = function(nsa){
+    if (nsa in nsa_map) load_object(nsa_map[nsa]);
 };
-
-var load_table = function(i){
-    var di = d[i];
-    var a = [di.ra, di.dec, di.dist].concat(di.userdata);
-    dom_tbody.innerHTML = "<tr><td>" + a.join("</td><td>") + "</td></tr>";
-}
 
 //initialize
 document.getElementById("footer").innerHTML += " Total # = " + my_n.toString();
 document.getElementById("thead").innerHTML = "<tr><th>" 
     + (["RA", "Dec", "NSA dist (Mpc/h)"].concat(ud_header)).join("</th><th>") 
     + "</th></tr>";
-if (my_i === undefined) my_i = 0;
-change_img(my_i);
+load_object_by_nsa(window.location.hash.substring(1));
+if (my_i < 0) load_object(0);
 
 //binding events
 $('#btn_next').click(function() {
-    change_img((my_i+1)%my_n);
+    load_object((my_i+1)%my_n);
     $('#nsa_id').val("");
 });
 
 $('#btn_prev').click(function() {
-    change_img((my_i+my_n-1)%my_n);
+    load_object((my_i+my_n-1)%my_n);
     $('#nsa_id').val("");
 });
 
 $('#nsa_id').change(function(){
-    var tmp_i = nsa_map[$(this).val()];
-    if (tmp_i !== undefined) change_img(tmp_i);
+    load_object_by_nsa($(this).val());
 });
 
 $('#nsa_id').keyup(function(event){
-    var tmp_i = nsa_map[$(this).val()];
-    if (tmp_i !== undefined) change_img(tmp_i);
+    load_object_by_nsa($(this).val());
 });
 
 $('#nsa_id').keydown(function(event){
