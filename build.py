@@ -66,5 +66,6 @@ if __name__ == "__main__":
                 nsa_map[d['nsa']] = i-1
         f.write('\n];\n')
         f.write('var nsa_map = %s;\n'%json.dumps(nsa_map))
+        f.write('var catalog_name = "%s";\n'%f_csv)
     db.close()
 

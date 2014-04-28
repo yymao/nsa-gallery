@@ -49,7 +49,7 @@ var load_object_by_nsa = function(nsa){
 };
 
 //initialize
-document.getElementById("footer").innerHTML += " Total # = " + my_n.toString();
+document.getElementById("footer").innerHTML += "Built from " + catalog_name + ". Total # of objects = " + my_n.toString() + ".";
 document.getElementById("thead").innerHTML = "<tr><th>" 
     + (["RA", "Dec", "NSA dist (Mpc/h)"].concat(ud_header)).join("</th><th>") 
     + "</th></tr>";
