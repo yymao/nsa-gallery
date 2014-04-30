@@ -31,11 +31,18 @@ if __name__ == "__main__":
     import csv
     import json
     import sqlite3
+    import re
 
     try:
         f_csv = sys.argv[1]
     except IndexError:
         raise ValueError("Usage: python bulid.py file.csv")
+
+    if re.match(r'(?:ht|f)tps?://', sys.argv[1], re.I) is not None:
+        f_csv = urlretrieve(sys.argv[1])[0]
+        tmp_flag = True
+    else:
+        tmp_flag = False
 
     img_dir = 'images'
     img_path = img_dir + '/%s_%s.jpg'
@@ -68,4 +75,6 @@ if __name__ == "__main__":
         f.write('var nsa_map = %s;\n'%json.dumps(nsa_map))
         f.write('var catalog_name = "%s";\n'%f_csv)
     db.close()
+    if tmp_flag:
+        os.unlink(f_csv)
 

@@ -22,11 +22,15 @@ NSA
 2832
 ```
 
-You can also find two example catalogs `main_catalog.csv` and `risa_comments.csv` in the `examples` directory.
+There is also an example catalog `example_catalog.csv` so you can see how to format a catalog file.
 
 Once you have the csv file in the correct format, please run
 
     python2 build.py /path/to/your/catalog.csv
+
+or 
+
+    python2 build.py http://url/to/your/catalog.csv
 
 This will download all the needed images (which takes some time, and you need Internet connection) and build a javascript file for your catalog. Once it's done, simply open `index.html` in your non-IE browser and you can look through all the NSA objects in your catalog.
 
