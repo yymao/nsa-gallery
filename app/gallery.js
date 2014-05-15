@@ -38,7 +38,7 @@ var load_object = function(i){
     if("ned" in di) add_hyperlink(url.ned+encodeURIComponent(di.ned), di.ned);
     //write table
     dom_tbody.innerHTML = "<tr><td>" 
-        + ([di.ra, di.dec, di.dist].concat(di.userdata)).join("</td><td>") 
+        + ([di.ra, di.dec, di.dist, di.sersic_n].concat(di.userdata)).join("</td><td>") 
         + "</td></tr>";
     window.location.hash = "#" + nsa;
     my_i = i;
@@ -51,7 +51,7 @@ var load_object_by_nsa = function(nsa){
 //initialize
 document.getElementById("footer").innerHTML += "Built from " + catalog_name + ". Total # of objects = " + my_n.toString() + ".";
 document.getElementById("thead").innerHTML = "<tr><th>" 
-    + (["RA", "Dec", "NSA dist (Mpc/h)"].concat(ud_header)).join("</th><th>") 
+    + (["RA", "Dec", "NSA dist (Mpc/h)", "Sersic n"].concat(ud_header)).join("</th><th>") 
     + "</th></tr>";
 load_object_by_nsa(window.location.hash.substring(1));
 if (my_i < 0) load_object(0);
@@ -87,10 +87,12 @@ $(document).keydown(function(event){
         switch(event.which){
             case 37:
             case 74:
+                event.preventDefault();
                 $('#btn_prev').click();
                 break;
             case 39:
             case 75:
+                event.preventDefault();
                 $('#btn_next').click();
                 break;
             case 70:

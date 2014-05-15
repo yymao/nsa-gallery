@@ -1,8 +1,8 @@
 import os
 from urllib import urlretrieve
 
-_db_cols = ['nsa', 'ra', 'dec', 'dist', 'iau', 'ned']
-_db_fmts = ['%d', '%.7f', '%.7f', '%g', '%s', '%s']
+_db_cols = 'nsa ra dec dist sersic_n sdss_objid iau ned'.split()
+_db_fmts = ['%d', '%.7f', '%.7f', '%g', '%g', '%d', '%s', '%s']
 
 _img_url = "http://skyservice.pha.jhu.edu/DR10/ImgCutout/getjpeg.aspx?ra=%s&dec=%s&scale=%s&width=512&height=512&opt=G"
 
@@ -54,13 +54,13 @@ if __name__ == "__main__":
         os.mkdir(img_dir)
     nsa_map = {}
     db = sqlite3.connect(db_path)
+    data = []
     with open(js_path, 'w') as f:
         with open(f_csv, 'r') as fi:
             rd = csv.reader(fi)
             for i, row in enumerate(rd):
                 if i==0:
                     f.write('var ud_header = %s;\n'%json.dumps(row[1:]))
-                    f.write('var d = [\n')
                     continue
                 d = query_nsa(row[0], db)
                 if d is None:
@@ -68,10 +68,9 @@ if __name__ == "__main__":
                     continue
                 d['userdata'] = list(row[1:])
                 get_images(d, img_scales, img_path)
-                f.write(',\n' if i > 1 else '')
-                f.write(json.dumps(d))
+                data.append(d)
                 nsa_map[d['nsa']] = i-1
-        f.write('\n];\n')
+        f.write('var d = %s;\n'%(json.dumps(data)))
         f.write('var nsa_map = %s;\n'%json.dumps(nsa_map))
         f.write('var catalog_name = "%s";\n'%f_csv)
     db.close()
