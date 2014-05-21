@@ -58,10 +58,9 @@ if __name__ == "__main__":
     with open(js_path, 'w') as f:
         with open(f_csv, 'r') as fi:
             rd = csv.reader(fi)
-            for i, row in enumerate(rd):
-                if i==0:
-                    f.write('var ud_header = %s;\n'%json.dumps(row[1:]))
-                    continue
+            row = rd.next()
+            f.write('var ud_header = %s;\n'%json.dumps(row[1:]))
+            for row in rd:
                 d = query_nsa(row[0], db)
                 if d is None:
                     print 'Warning: Cannot find NSA ID', row[0]
@@ -69,7 +68,7 @@ if __name__ == "__main__":
                 d['userdata'] = list(row[1:])
                 get_images(d, img_scales, img_path)
                 data.append(d)
-                nsa_map[d['nsa']] = i-1
+                nsa_map[d['nsa']] = len(data) - 1
         f.write('var d = %s;\n'%(json.dumps(data)))
         f.write('var nsa_map = %s;\n'%json.dumps(nsa_map))
         f.write('var catalog_name = "%s";\n'%f_csv)
