@@ -11,7 +11,6 @@ To use this web app, first you need to create a csv file which contains a list o
 - The first column in this csv file MUST be the NSA IDs.
 - All other columns in this csv file will be displayed on the webpage.
 
-Once you have the csv file in the correct format, please run
 If you just have a list of NSA IDs, you can simply create a text file and write in:
 
 ```
